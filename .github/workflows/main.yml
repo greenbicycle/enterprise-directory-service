@@ -22,9 +22,11 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: touch environment file
-      run: echo ${{ eds_environment }} > .env
+    - shell: bash
+      env:
+        EDS_ENVIRONMENT: ${{ secrets.eds_environment }}
+      run: |
+        echo "$EDS_ENVIRONMENT" > .env
 
     # Runs a single command using the runners shell
     - name: Validate composer.json

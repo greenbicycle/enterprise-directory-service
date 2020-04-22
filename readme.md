@@ -1,3 +1,5 @@
+![CI](https://github.com/greenbicycle/eds-user-info-class/workflows/CI/badge.svg)
+
 # EDS User Info Class
 
 EDS is a DSML (Directory Service Markup Language) api.

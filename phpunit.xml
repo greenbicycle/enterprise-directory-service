@@ -1,0 +1,36 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.0/phpunit.xsd"
+        backupGlobals="true"
+        backupStaticAttributes="false"
+        bootstrap="./bootstrap.php"
+        cacheTokens="false"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        forceCoversAnnotation="false"
+        verbose="true">
+    <testsuites>
+        <testsuite name="COMITS TicketCat">
+            <directory>tests/</directory>
+        </testsuite>
+    </testsuites>
+    <logging>
+        <log type="testdox-html" target="logs/testdox.html"/>
+        <!--
+                <log type="coverage-html" target="/public/coverage" lowUpperBound="35" highLowerBound="70"/>
+        -->
+    </logging>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <exclude>
+                <directory suffix=".php">vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <env name="APP_ENV" value="phpunit" force="true"/>
+    </php>
+</phpunit>

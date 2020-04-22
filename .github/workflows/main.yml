@@ -24,7 +24,7 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: touch environment file
-      run: touch .env
+      run: echo ${{ eds_environment }} > .env
 
     # Runs a single command using the runners shell
     - name: Validate composer.json

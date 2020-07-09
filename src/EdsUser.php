@@ -1,14 +1,23 @@
 <?php
+/**
+ * @author Jeff Davis
+ */
 declare(strict_types=1);
 
-namespace EdsUser;
+namespace  EnterpriseDirectoryService;
 
-class EdsUserInfo
+use Log;
+
+/**
+ * Class EdsUser
+ *
+ */
+class EdsUser
 {
     /**
      * Used to query attributes
      */
-    const queryString = "//dsml:entry/dsml:attr[@name='%s']/dsml:value";
+    const QUERYSTRING = "//dsml:entry/dsml:attr[@name='%s']/dsml:value";
 
     /**
      * Attributes that we want to retrieve. Index is our internal name,
@@ -17,15 +26,23 @@ class EdsUserInfo
      * @var string[]
      */
     public $attributes = [
+        'netid' => 'uid',
+        'name' => 'preferredCn',
+        'first_name' => 'preferredGivenname',
+        'last_name' => 'preferredSn',
+        'emplid' => 'emplId',
+        'affiliation' => 'eduPersonPrimaryAffiliation',
         'email' => 'mail',
         'title' => 'employeeTitle',
-        'name' => 'preferredCn',
-        'fname' => 'preferredGivenname',
-        'lname' => 'sn',
-        'deptName' => 'employeePrimaryDeptName',
+        'ferpa' => 'employeeIsFerpaTrained',
+        'dept_name' => 'employeePrimaryDeptName',
+        'dept' => 'employeePrimaryDept',
+        'building_number' => 'employeeBldgNum',
+        'building_name' => 'employeeBldgName',
+        'room_number' => 'employeeRoomNum',
         'phone' => 'employeePhone',
+        'employee_type' => 'employeeType'
     ];
-
 
     /**
      * @var string for eds authentication
@@ -43,6 +60,11 @@ class EdsUserInfo
     protected $baseUrl;
 
     /**
+     * @var string raw result from eds request
+     */
+    protected $dmsl;
+
+    /**
      * @var string dsml response
      */
     protected $xml;
@@ -50,29 +72,36 @@ class EdsUserInfo
     public function setOptionsFromEnvironment()
     {
         $options = [];
-        if (getenv('EDS_USER')) {
-            $options['EDS_USER'] = getenv('EDS_USER');
+        if ($_ENV['EDS_USER']) {
+            $options['EDS_USER'] = $_ENV['EDS_USER'];
         }
-        if (getenv('EDS_PASSWORD')) {
-            $options['EDS_PASSWORD'] = getenv('EDS_PASSWORD');
+        if ($_ENV['EDS_PASSWORD']) {
+            $options['EDS_PASSWORD'] = $_ENV['EDS_PASSWORD'];
         }
-        if (getenv('EDS_URL')) {
-            $options['EDS_URL'] = getenv('EDS_URL');
+        if ($_ENV['EDS_URL']) {
+            $options['EDS_URL'] = $_ENV['EDS_URL'];
         }
         $this->setOptions($options);
         return $this;
     }
 
+    /**
+     * Sometimes you might want to manually set them instead of using
+     * environment variables
+     *
+     * @param $options
+     * @return $this
+     */
     public function setOptions($options)
     {
-        $this->baseUrl = $options['EDS_URL'];
+        $this->baseUrl  = $options['EDS_URL'];
         $this->username = $options['EDS_USER'];
         $this->password = $options['EDS_PASSWORD'];
         return $this;
     }
 
     /**
-     * Make sure all fields are set
+     * Make sure all options to (eds user, pass and url)
      *
      * @return bool
      */
@@ -90,21 +119,21 @@ class EdsUserInfo
      */
     public function requestResponse($userId)
     {
-        $url = $this->baseUrl . '/' . $userId;
+        $url = $this->baseUrl.'/'.$userId;
         $cred = sprintf(
             'Authorization: Basic %s',
-            base64_encode($this->username . ':' . $this->password)
+            base64_encode($this->username.':'.$this->password)
         );
         $ctx = stream_context_create([
             'http' => [
-                'method'=>'GET',
-                'header'=>$cred
+                'method' => 'GET',
+                'header' => $cred
             ]
         ]);
 
         // send our request and retrieve the DSML response
-        $dsml =  file_get_contents($url, false, $ctx);
-        $this->xml = new \SimpleXMLElement($dsml);
+        $this->dmsl = file_get_contents($url, false, $ctx);
+        $this->xml = new \SimpleXMLElement($this->dmsl);
         return $this->xml;
     }
 
@@ -119,9 +148,9 @@ class EdsUserInfo
     {
         return array_map(
             function ($item) {
-              return $item->__toString();
+                return $item->__toString();
             },
-            $this->xml->xpath(sprintf($this::queryString, $attribute))
+            $this->xml->xpath(sprintf($this::QUERYSTRING, $attribute))
         );
     }
 
@@ -130,18 +159,24 @@ class EdsUserInfo
      * There is usually only one anyway.
      *
      * @param $attribute
-     * @return array
+     * @return string
      */
-    public function queryFirstAttribute($attribute) {
-        return $this->xml->xpath(
-            sprintf($this::queryString, $attribute)
-        )[0]->__toString();
+    public function queryFirstAttribute($attribute)
+    {
+        $result = $this->xml->xpath(
+            sprintf($this::QUERYSTRING, $attribute)
+        );
+        if (is_array($result) && isset($result[0])) {
+            return $result[0]->__toString();
+        } else {
+            return null;
+        }
     }
 
     /**
      * Return an array of desired attributes
      *
-     * @param  bool  $firstOnly first value returned as string
+     * @param  bool  $firstOnly  first value returned as string
      * @return array
      */
     public function getAllAttributes($firstOnly = true)
@@ -151,13 +186,70 @@ class EdsUserInfo
         }
         $results = [];
         foreach ($this->attributes as $field => $attribute) {
-            if ($firstOnly) {
-                $results[$field] = $this->queryFirstAttribute($attribute);
+            /**
+             * Some fields needs special handling like first and last name
+             *    first_name => queryFieldFirstName()
+             */
+            $specialFieldMethod = 'queryField' . str_replace('_','',ucwords($field, '_'));
+            if (method_exists($this, $specialFieldMethod)) {
+                $results[$field] = $this->{$specialFieldMethod}();
             } else {
-                $results[$field] = $this->queryAttribute($attribute);
+                if ($firstOnly) {
+                    $results[$field] = $this->queryFirstAttribute($attribute);
+                } else {
+                    $results[$field] = $this->queryAttribute($attribute);
+                }
             }
         }
         return $results;
+    }
+
+    /**
+     * Special handing for first_name field
+     * - If there is a preferred name, get that
+     *   otherwise use the given name
+     *
+     * @return string
+     */
+    public function queryFieldFirstName()
+    {
+        $preferred = $this->queryFirstAttribute("preferredGivenname");
+        if (is_null($preferred)) {
+            return $this->queryFirstAttribute("givenName");
+        }
+        return $preferred;
+    }
+
+    /**
+     * Special handing for last_name field
+     * - If there is a preferred name, get that
+     *   otherwise use the given name
+     *
+     * @return string
+     */
+    public function queryFieldLastName()
+    {
+        $preferred = $this->queryFirstAttribute("preferredSn");
+        if (is_null($preferred)) {
+            return $this->queryFirstAttribute("sn");
+        }
+        return $preferred;
+    }
+
+    /**
+     * Special handing for name (first and last) field
+     * - If there is a preferred name, get that
+     *   otherwise use the given name
+     *
+     * @return string
+     */
+    public function queryFieldName()
+    {
+        $preferred = $this->queryFirstAttribute("preferredCn");
+        if (is_null($preferred)) {
+            return $this->queryFirstAttribute("cn");
+        }
+        return $preferred;
     }
 
     /**
@@ -185,8 +277,9 @@ class EdsUserInfo
      * @param $array
      * @return $this
      */
-    public function addAttributes($array) {
-        foreach( $array as $key => $value) {
+    public function addAttributes($array)
+    {
+        foreach ($array as $key => $value) {
             $this->attributes[$key] = $value;
         }
         return $this;
@@ -262,7 +355,23 @@ class EdsUserInfo
     /**
      * @return string
      */
-    public function getXml(): string
+    public function getDmsl(): ?string
+    {
+        return $this->dmsl;
+    }
+
+    /**
+     * @param  string  $dmsl
+     */
+    public function setDmsl(string $dmsl): void
+    {
+        $this->dmsl = $dmsl;
+    }
+
+    /**
+     * @return object
+     */
+    public function getXml(): object
     {
         return $this->xml;
     }

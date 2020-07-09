@@ -10,5 +10,6 @@ into a database.
 
 
 # See also
-https://confluence.arizona.edu/x/aAXjAQ
-https://www.oasis-open.org/committees/dsml/faq.php 
+
+* https://confluence.arizona.edu/x/aAXjAQ
+* https://www.oasis-open.org/committees/dsml/faq.php 

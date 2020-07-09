@@ -12,7 +12,7 @@
         forceCoversAnnotation="false"
         verbose="true">
     <testsuites>
-        <testsuite name="COMITS TicketCat">
+        <testsuite name="EdsUser">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

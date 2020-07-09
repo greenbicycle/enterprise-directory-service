@@ -1,4 +1,4 @@
-![CI](https://github.com/greenbicycle/eds-user-info-class/workflows/CI/badge.svg)
+![CI](https://github.com/greenbicycle/enterprise-directory-service/workflows/CI/badge.svg)
 
 # EDS User Info Class
 
@@ -10,5 +10,5 @@ into a database.
 
 
 # See also
-
+https://confluence.arizona.edu/x/aAXjAQ
 https://www.oasis-open.org/committees/dsml/faq.php 

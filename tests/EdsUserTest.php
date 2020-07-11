@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
-use EnterpriseDirectoryService\EdsUser;
+use EnterpriseDirectoryService\User;
 
 class EdsUserTest extends TestCase
 {
@@ -11,14 +11,14 @@ class EdsUserTest extends TestCase
 
     public function setUp() : void
     {
-        $this->edsUser = new EdsUser();
+        $this->edsUser = new User();
         $this->extraAttributes = [
           'statusHistory' => 'studentStatusHistory'
         ];
     }
     public function testThatClassExists()
     {
-        $this->assertTrue(class_exists(EdsUser::class));
+        $this->assertTrue(class_exists(User::class));
     }
 
     public function testThatOptionsCanBeSetFromEnvironment()

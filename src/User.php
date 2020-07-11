@@ -6,13 +6,11 @@ declare(strict_types=1);
 
 namespace  EnterpriseDirectoryService;
 
-use Log;
-
 /**
  * Class EdsUser
  *
  */
-class EdsUser
+class User
 {
     /**
      * Used to query attributes

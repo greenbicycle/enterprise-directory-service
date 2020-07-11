@@ -2,6 +2,7 @@
     "name" : "greenbicycle/enterprise-directory-service",
     "description": "Retrieve EDS person data",
     "license" : "MIT",
+    "minimum-stability": "dev",
     "require": {
         "ext-simplexml": "*"
     },

@@ -84,7 +84,6 @@ class EdsUserTest extends TestCase
         ];
     }
 
-
     public function testThatExtraAttributesCanBeAdded()
     {
         $this->edsUser->addAttributes($this->extraAttributes);

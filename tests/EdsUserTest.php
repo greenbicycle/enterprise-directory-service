@@ -15,10 +15,12 @@ class EdsUserTest extends TestCase
         $this->extraAttributes = [
           'statusHistory' => 'studentStatusHistory'
         ];
-    }
-    public function testThatClassExists()
-    {
-        $this->assertTrue(class_exists(User::class));
+        // Fake a request
+        // todo: maybe have more than one example file?
+        $this->dsml = file_get_contents(__DIR__ . "/example.dsml.xml");
+        $this->edsUser->setDsml($this->dsml);
+        $this->edsUser->convertDsml();
+
     }
 
     public function testThatOptionsCanBeSetFromEnvironment()
@@ -34,54 +36,63 @@ class EdsUserTest extends TestCase
         );
     }
 
-//    public function testThatAttributeCanBeQueried()
-//    {
-//        $this->edsUser->setOptionsFromEnvironment()
-//            ->requestResponse(getenv('EDS_TEST_ID'));
-//        $this->assertTrue(
-//            count($this->edsUser->queryAttribute('uid')) > 0
-//        );
-//        $this->assertTrue(
-//            count($this->edsUser->queryAttribute('cn')) > 0
-//        );
-//    }
-//    public function testThatNonexistentAttributeCannotBeQueried()
-//    {
-//        $this->edsUser->setOptionsFromEnvironment()
-//            ->requestResponse(getenv('EDS_TEST_ID'));
-//        $this->assertEquals(0, count($this->edsUser->queryAttribute('foo')));
-//    }
-//
-//    public function testThatGetAllAttributesMethodWorks()
-//    {
-//        $this->edsUser->setOptionsFromEnvironment()
-//            ->requestResponse(getenv('EDS_TEST_ID'));
-//        $this->assertTrue(
-//            count($this->edsUser->getAllAttributes()) > 0
-//        );
-//    }
-//    public function testThatGetAllAttributesMethodWorksWithFirstOnly()
-//    {
-//        $this->edsUser->setOptionsFromEnvironment()
-//            ->requestResponse(getenv('EDS_TEST_ID'));
-//        $this->assertTrue(
-//            count($this->edsUser->getAllAttributes(true)) > 0
-//        );
-//    }
-//
-//    /**
-//     *
-//     */
-//    public function testThatExtraAttributesCanBeAdded()
-//    {
-//        $this->edsUser->setOptionsFromEnvironment()
-//            ->addAttributes($this->extraAttributes)
-//            ->requestResponse(getenv('EDS_TEST_ID'));
-//        $this->assertTrue(
-//            array_key_exists(
-//                array_key_first($this->extraAttributes),
-//                $this->edsUser->getAllAttributes()
-//            )
-//        );
-//    }
+    public function testThatAttributeCanBeQueried()
+    {
+        $this->assertTrue(
+            count($this->edsUser->queryAttribute('uid')) > 0
+        );
+        $this->assertTrue(
+            count($this->edsUser->queryAttribute('cn')) > 0
+        );
+    }
+
+    public function testThatGetAllAttributesMethodWorks()
+    {
+        $this->assertTrue(
+            count($this->edsUser->getAllAttributes()) > 0
+        );
+    }
+
+    public function testThatGetAllAttributesMethodWorksWithFirstOnly()
+    {
+        $results = $this->edsUser->getAllAttributes(true);
+        $this->assertTrue(
+            count($results) > 0
+        );
+    }
+
+    /**
+     * @dataProvider userFieldProvider
+     */
+    public function testThatCertainFieldsAreNotNull($field)
+    {
+        $results = $this->edsUser->getAllAttributes(true);
+        $this->assertFalse(
+            is_null($results[$field])
+        );
+    }
+
+    public function userFieldProvider()
+    {
+        return [
+            ['affiliation'],
+            ['first_name'],
+            ['last_name'],
+            ['name'],
+            ['netid'],
+            ['email']
+        ];
+    }
+
+
+    public function testThatExtraAttributesCanBeAdded()
+    {
+        $this->edsUser->addAttributes($this->extraAttributes);
+        $this->assertTrue(
+            array_key_exists(
+                array_key_first($this->extraAttributes),
+                $this->edsUser->getAllAttributes()
+            )
+        );
+    }
 }

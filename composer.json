@@ -1,13 +1,15 @@
 {
-    "name" : "greenbicycle/eds-user-info",
-    "description": "Retrieve EDS data",
+    "name" : "greenbicycle/enterprise-directory-service",
+    "description": "Retrieve EDS person data",
     "license" : "MIT",
+    "require": {
+        "ext-simplexml": "*"
+    },
     "require-dev": {
         "vlucas/phpdotenv": "^4.1",
         "larapack/dd": "^1.1",
         "phpunit/phpunit": "^9.0"
     },
-
     "autoload": {
         "psr-4": {
             "EnterpriseDirectoryService\\":"src/"

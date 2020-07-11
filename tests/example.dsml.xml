@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsml:dsml xmlns:dsml="http://www.dsml.org/DSML">
+    <dsml:directory-entries>
+        <dsml:entry dn="uaid=111222333444,ou=People,dc=eds,dc=arizona,dc=edu">
+            <dsml:attr name="studentId">
+                <dsml:value>S9999999</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="studentAcademicProgram">
+                <dsml:value>084:BS:AL:MICR:</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="uaId">
+                <dsml:value>111222333444</dsml:value>
+            </dsml:attr>
+            <dsml:objectclass>
+                <dsml:oc-value>arizonaEduStudent</dsml:oc-value>
+                <dsml:oc-value>top</dsml:oc-value>
+                <dsml:oc-value>person</dsml:oc-value>
+                <dsml:oc-value>eduPerson</dsml:oc-value>
+                <dsml:oc-value>inetOrgPerson</dsml:oc-value>
+                <dsml:oc-value>arizonaEduPerson</dsml:oc-value>
+                <dsml:oc-value>organizationalPerson</dsml:oc-value>
+            </dsml:objectclass>
+            <dsml:attr name="uid">
+                <dsml:value>johndoe</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="studentTermStatus">
+                <dsml:value>084:U:FR:F:RM</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="eduPersonPrimaryAffiliation">
+                <dsml:value>student</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="mail">
+                <dsml:value>johndoe@email.arizona.edu</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="sn">
+                <dsml:value>Doe</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="studentAPDesc">
+                <dsml:value>Freshman - Bachelor of Science - Microbiology - 2008 Fall</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="studentEmail">
+                <dsml:value>johndoe@email.arizona.edu</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="cn">
+                <dsml:value>John X Doe</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="studentInfoReleaseCode">
+                <dsml:value>M</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="givenName">
+                <dsml:value>John X</dsml:value>
+            </dsml:attr>
+            <dsml:attr name="eduPersonAffiliation">
+                <dsml:value>member</dsml:value>
+                <dsml:value>student</dsml:value>
+            </dsml:attr>
+        </dsml:entry>
+    </dsml:directory-entries>
+</dsml:dsml>

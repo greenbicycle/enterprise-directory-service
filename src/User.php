@@ -60,13 +60,16 @@ class User
     /**
      * @var string raw result from eds request
      */
-    protected $dmsl;
+    protected $dsml;
 
     /**
-     * @var string dsml response
+     * @var string dsml response converted to SimpleXml
      */
     protected $xml;
 
+    /**
+     * @return $this
+     */
     public function setOptionsFromEnvironment()
     {
         $options = [];
@@ -130,8 +133,19 @@ class User
         ]);
 
         // send our request and retrieve the DSML response
-        $this->dmsl = file_get_contents($url, false, $ctx);
-        $this->xml = new \SimpleXMLElement($this->dmsl);
+        $this->dsml = file_get_contents($url, false, $ctx);
+        return $this->convertDsml();
+    }
+
+    /**
+     * We convert the dsml to SimpleXML for easy
+     * querying
+     *
+     * @return \SimpleXMLElement|string
+     */
+    public function convertDsml()
+    {
+        $this->xml = new \SimpleXMLElement($this->dsml);
         return $this->xml;
     }
 
@@ -353,17 +367,17 @@ class User
     /**
      * @return string
      */
-    public function getDmsl(): ?string
+    public function getDsml(): ?string
     {
-        return $this->dmsl;
+        return $this->dsml;
     }
 
     /**
-     * @param  string  $dmsl
+     * @param  string  $dsml
      */
-    public function setDmsl(string $dmsl): void
+    public function setDsml(string $dsml): void
     {
-        $this->dmsl = $dmsl;
+        $this->dsml = $dsml;
     }
 
     /**
@@ -375,9 +389,9 @@ class User
     }
 
     /**
-     * @param  string  $xml
+     * @param  \SimpleXMLElement  $xml
      */
-    public function setXml(string $xml)
+    public function setXml(\SimpleXMLElement $xml)
     {
         $this->xml = $xml;
     }

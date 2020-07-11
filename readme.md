@@ -12,6 +12,8 @@ This will not work unless you have been provided credentials and access.
 
 ## Install
 
+In your application:
+
 `composer require greenbicycle/enterprise-directory-service`
 
 ## Usage
@@ -22,6 +24,13 @@ use EnterpriseDirectoryService\User as EdsUser;
 # This also works with emplid
 $results = EdsUser::retrieveById('netid');
 
+```
+## Testing
+
+
+```
+composer install
+/vendor/bin/phpunit
 ```
 
 ## See also

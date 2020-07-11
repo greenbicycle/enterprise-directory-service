@@ -1,6 +1,6 @@
 ![CI](https://github.com/greenbicycle/enterprise-directory-service/workflows/CI/badge.svg)
 
-# EDS User Info Class
+# Enterprise Directory Services (EDS)
 
 EDS is a DSML (Directory Service Markup Language) api.
 
@@ -10,5 +10,6 @@ into a database.
 
 
 # See also
-https://confluence.arizona.edu/x/aAXjAQ
-https://www.oasis-open.org/committees/dsml/faq.php 
+
+* https://confluence.arizona.edu/x/aAXjAQ
+* https://www.oasis-open.org/committees/dsml/faq.php 

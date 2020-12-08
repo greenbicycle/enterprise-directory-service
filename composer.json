@@ -7,7 +7,7 @@
         "ext-simplexml": "*"
     },
     "require-dev": {
-        "vlucas/phpdotenv": "^4.1",
+        "vlucas/phpdotenv": "^4.0",
         "larapack/dd": "^1.1",
         "phpunit/phpunit": "^9.0"
     },
